@@ -15,7 +15,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.00;
+our $VERSION = 1.01;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -152,6 +152,7 @@ sub execute {
     }
 
     for my $code ( @{ $json->{code} || [] } ) {
+        $code->{type} = 'Code' . $code->{type};
         push @xml_parts, _CodeTemplate( $code->{type}, $code->{version}, $code->{function} || $code->{type} );
     }
     
@@ -176,7 +177,6 @@ sub execute {
 sub _CodeTemplate {
     my ($type, $version, $function) = @_;
 
-    $type    = 'Code' . $type;
     $version = $version ? ' Version="' . $version . '"' : '';
 
     return qq~    <$type Type="post"$version><![CDATA[
