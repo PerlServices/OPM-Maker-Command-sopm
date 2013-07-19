@@ -107,7 +107,7 @@ sub execute {
 
         # remove "hidden" files from list;
         @files = grep{ 
-            ( substr( $_, 0, 1 ) eq '.' ) &&
+            ( substr( $_, 0, 1 ) ne '.' ) &&
             $_ !~ m{[\\/]\.} 
         }sort @files;
 
