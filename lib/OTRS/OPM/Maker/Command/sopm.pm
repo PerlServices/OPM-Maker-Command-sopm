@@ -15,7 +15,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 0.02;
+our $VERSION = 1.00;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -39,7 +39,7 @@ sub validate_args {
 
         @json_files > 1 ?
             $self->usage_error( 'found more than one json file, please specify the config file to use' ) :
-            do{ $opt->{config} = $json_files[0];
+            do{ $opt->{config} = $json_files[0] };
     }
     
     my $config = Path::Class::File->new( $opt->{config} );
@@ -61,7 +61,7 @@ sub execute {
 
     # check needed info
     for my $needed (qw(name version framework)) {
-        if ( !$json->{$name} ) {
+        if ( !$json->{$needed} ) {
             print STDERR "Need $needed in config file";
             exit 1;
         }
@@ -109,11 +109,11 @@ sub execute {
         @files = grep{ 
             ( substr( $_, 0, 1 ) eq '.' ) &&
             $_ !~ m{[\\/]\.} 
-        }@files;
+        }sort @files;
 
         push @xml_parts, 
             sprintf "    <Filelist>\n%s\n    </Filelist>",
-                join "\n", map{ my $permission = $_ =~ /^bin/ ? 755 : 644; qq~     <File Permission="$permission" Location="$_" />~ }@files;
+                join "\n", map{ my $permission = $_ =~ /^bin/ ? 755 : 644; qq~        <File Permission="$permission" Location="$_" />~ }@files;
     }
 
     my %actions = (
@@ -142,7 +142,7 @@ sub execute {
             my $type    = $subaction->{type};
 
             next SUBACTION if !$subaction_code{$type};
-            push @actions, $subaction_code{$type};
+            push @actions, $subaction_code{$type}->($subaction);
         }
 
         push @xml_parts,
@@ -176,6 +176,7 @@ sub execute {
 sub _CodeTemplate {
     my ($type, $version, $function) = @_;
 
+    $type    = 'Code' . $type;
     $version = $version ? ' Version="' . $version . '"' : '';
 
     return qq~    <$type Type="post"$version><![CDATA[
