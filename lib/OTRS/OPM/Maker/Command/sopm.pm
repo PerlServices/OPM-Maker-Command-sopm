@@ -8,6 +8,7 @@ use warnings;
 use File::Find::Rule;
 use File::Basename;
 use File::Spec;
+use IO::File;
 use JSON;
 use Path::Class ();
 use XML::LibXML;
@@ -15,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.02;
+our $VERSION = 1.03;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -157,7 +158,7 @@ sub execute {
     }
     
     my $xml = sprintf qq~<?xml version="1.0" encoding="utf-8" ?>
-<otrs_package>
+<otrs_package version="1.0">
     <CVS>\$Id: %s.sopm,v 1.1.1.1 2011/04/15 07:49:58 rb Exp \$</CVS>
     <Name>%s</Name>
     <Version>%s</Version>
