@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.04;
+our $VERSION = 1.05;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -123,33 +123,64 @@ sub execute {
         Upgrade   => 'post',
     );
 
-    my %subaction_code = (
+    my %action_code = (
         TableCreate => \&_TableCreate,
         Insert      => \&_Insert,
         TableDrop   => \&_TableDrop,
     );
+    
+    my %tables_to_delete;
+    my %db_actions;
 
     ACTION:
     for my $action ( @{ $json->{database} || [] } ) {
-        next ACTION if !$actions{ $action->{type} };
+        my $tmp_version = $action->{version};
+        my @versions    = ref $tmp_version ? @{$tmp_version} : ($tmp_version);
 
-        my $action_type = $action->{type};
-        my $order       = $actions{ $action->{type} };
+        VERSION:
+        for my $version ( @versions ) {
+            my $action_type = $version ? 'Upgrade' : 'Install';
+            my $op          = $action->{type};
 
-        my @actions;
-
-        SUBACTION:
-        for my $subaction ( @{ $action->{actions} || [] } ) {
-            my $type    = $subaction->{type};
-
-            next SUBACTION if !$subaction_code{$type};
-            push @actions, $subaction_code{$type}->($subaction);
+            next VERSION if !$action_code{$op};
+            
+            if ( $op eq 'TableCreate' ) {
+                my $table = $action->{name};
+                $tables_to_delete{$table}++;
+            }
+            elsif ( $op eq 'TableDrop' ) {
+                my $table = $action->{name};
+                delete $tables_to_delete{$table};
+            }
+        
+            $action->{version} = $version;    
+            push @{ $db_actions{$action_type} }, $action_code{$op}->($action);
         }
-
+    }
+    
+    for my $action_type ( qw/Install Upgrade/ ) {
+        
+        next if !$db_actions{$action_type};
+        
+        my $order = $actions{$action_type};
+        
         push @xml_parts,
             sprintf qq~    <Database$action_type Type="$order">
 %s
-    </Database$action_type>~, join "\n", @actions;
+    </Database$action_type>~, join "\n", @{ $db_actions{$action_type} };
+    }
+    
+    if ( %tables_to_delete ) {
+        my @actions;
+        
+        for my $table ( keys %tables_to_delete ) {
+            push @actions, _TableDrop({ name => $table });
+        }
+        
+        push @xml_parts,
+            sprintf qq~    <DatabaseUninstall Type="pre">
+%s
+    </DatabaseUninstall>~, join "\n", @actions;
     }
 
     for my $code ( @{ $json->{code} || [] } ) {
