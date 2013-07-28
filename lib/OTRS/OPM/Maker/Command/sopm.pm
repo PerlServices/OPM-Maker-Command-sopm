@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.05;
+our $VERSION = 1.06;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -202,6 +202,7 @@ sub execute {
     join( "\n", @xml_parts );
 
     my $fh = IO::File->new( $name . '.sopm', 'w' );
+    $fh->binmode( ':encoding(utf-8)' );
     $fh->print( $xml );
     $fh->close;
 }
