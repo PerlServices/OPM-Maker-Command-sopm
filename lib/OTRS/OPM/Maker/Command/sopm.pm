@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.07;
+our $VERSION = 1.08;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -127,6 +127,7 @@ sub execute {
         TableCreate => \&_TableCreate,
         Insert      => \&_Insert,
         TableDrop   => \&_TableDrop,
+        ColumnAdd   => \&_ColumnAdd,
     );
     
     my %tables_to_delete;
@@ -317,6 +318,32 @@ sub _TableCreate {
     }
 
     $string .= '        </TableCreate>';
+
+    return $string;
+}
+
+sub _ColumnAdd {
+    my ($action) = @_;
+
+    my $table   = $action->{name};
+    my $version = $action->{version};
+
+    my $version_string = $version ? ' Version="' . $version . '"' : '';
+
+    my $string = '        <TableAlter Name="' . $table . '"' . $version_string . ">\n";
+
+    COLUMN:
+    for my $column ( @{ $action->{columns} || [] } ) {
+        $string .= sprintf '            <ColumnAdd Name="%s" Required="%s" Type="%s"%s%s%s />' . "\n",
+            $column->{name},
+            $column->{required},
+            $column->{type},
+            ( $column->{size} ? ' Size="' . $column->{size} . '"' : "" ),
+            ( $column->{auto_increment} ? ' AutoIncrement="true"' : "" ),
+            ( $column->{primary_key} ? ' PrimaryKey="true"' : "" ),
+    }
+
+    $string .= '        </TableAlter>';
 
     return $string;
 }
