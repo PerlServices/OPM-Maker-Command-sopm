@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.09;
+our $VERSION = 1.10;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -203,7 +203,7 @@ sub execute {
     $json->{version},
     join( "\n", @xml_parts );
 
-    my $fh = IO::File->new( $name . '.sopm', 'w' );
+    my $fh = IO::File->new( $name . '.sopm', 'w' ) or die $!;
     $fh->print( $xml );
     $fh->close;
 }
