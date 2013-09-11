@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.12;
+our $VERSION = 1.13;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -217,7 +217,7 @@ sub _IntroTemplate {
 
     my $version = $intro->{version} ? ' Version="' . $intro->{version} . '"' : '';
     my $type    = $intro->{type};
-    my $text    = ref $intro->{text} ? join( "\n", @{ $intro->{text} } ) : $intro->{text};
+    my $text    = ref $intro->{text} ? join( "<br />\n", @{ $intro->{text} } ) : $intro->{text};
 
     return qq~    <Intro$type Type="post"$version><![CDATA[
             $text
