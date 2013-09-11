@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.15;
+our $VERSION = 1.16;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -324,7 +324,7 @@ sub _TableCreate {
 
     UNIQUE:
     for my $unique ( @{ $action->{unique} || [] } ) {
-        my $table = $key->{name};
+        my $table = $unique->{name};
         $string .= '            <Unique Name="' . join( "_", @{$unique->{columns} || ["unique$table"] } ) . '">' . "\n";
 
         for my $column ( @{ $unique->{columns} || [] } ) {
