@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.16;
+our $VERSION = 1.17;
 
 sub abstract {
     return "build sopm file based on metadata";
