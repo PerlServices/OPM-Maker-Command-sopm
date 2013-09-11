@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.14;
+our $VERSION = 1.15;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -382,10 +382,28 @@ sub _ColumnAdd {
 sub _ColumnChange {
     my ($action) = @_;
 
-    my $xml = _ColumnAdd( $action );
-    $xml =~ s/ColumnAdd/ColumnChange/g;
+    my $table   = $action->{name};
+    my $version = $action->{version};
 
-    return $xml;
+    my $version_string = $version ? ' Version="' . $version . '"' : '';
+
+    my $string = '        <TableAlter Name="' . $table . '"' . $version_string . ">\n";
+
+    COLUMN:
+    for my $column ( @{ $action->{columns} || [] } ) {
+        $string .= sprintf '            <ColumnChange NameNew="%s" NameOld="%s" Required="%s" Type="%s"%s%s%s />' . "\n",
+            $column->{new_name},
+            $column->{old_name},
+            $column->{required},
+            $column->{type},
+            ( $column->{size} ? ' Size="' . $column->{size} . '"' : "" ),
+            ( $column->{auto_increment} ? ' AutoIncrement="true"' : "" ),
+            ( $column->{primary_key} ? ' PrimaryKey="true"' : "" ),
+    }
+
+    $string .= '        </TableAlter>';
+
+    return $string;
 }
 
 1;
