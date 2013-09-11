@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.13;
+our $VERSION = 1.14;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -125,10 +125,11 @@ sub execute {
     );
 
     my %action_code = (
-        TableCreate => \&_TableCreate,
-        Insert      => \&_Insert,
-        TableDrop   => \&_TableDrop,
-        ColumnAdd   => \&_ColumnAdd,
+        TableCreate  => \&_TableCreate,
+        Insert       => \&_Insert,
+        TableDrop    => \&_TableDrop,
+        ColumnAdd    => \&_ColumnAdd,
+        ColumnChange => \&_ColumnChange,
     );
     
     my %tables_to_delete;
@@ -321,6 +322,18 @@ sub _TableCreate {
             ( $column->{primary_key} ? ' PrimaryKey="true"' : "" ),
     }
 
+    UNIQUE:
+    for my $unique ( @{ $action->{unique} || [] } ) {
+        my $table = $key->{name};
+        $string .= '            <Unique Name="' . join( "_", @{$unique->{columns} || ["unique$table"] } ) . '">' . "\n";
+
+        for my $column ( @{ $unique->{columns} || [] } ) {
+            $string .= '                <UniqueColumn Name="' . $column . '" />';
+        }
+
+        $string .= '            </Unique>' . "\n";
+    }
+
     KEY:
     for my $key ( @{ $action->{keys} || [] } ) {
         my $table = $key->{name};
@@ -364,6 +377,15 @@ sub _ColumnAdd {
     $string .= '        </TableAlter>';
 
     return $string;
+}
+
+sub _ColumnChange {
+    my ($action) = @_;
+
+    my $xml = _ColumnAdd( $action );
+    $xml =~ s/ColumnAdd/ColumnChange/g;
+
+    return $xml;
 }
 
 1;
