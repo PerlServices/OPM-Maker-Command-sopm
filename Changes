@@ -1,0 +1,8 @@
+History for OTRS::OPM::Maker::Command::sopm
+===========================================
+
+1.18 2013-10-31
+
+     + fix bug in "<...Required>": the required version wasn't added
+     + improved tests
+     + add Changes file
