@@ -27,6 +27,8 @@ my $check   = q~<?xml version="1.0" encoding="utf-8" ?>
     <Framework>3.0.x</Framework>
     <Framework>3.1.x</Framework>
     <Framework>3.2.x</Framework>
+    <PackageRequired Version="3.2.1">TicketOverviewHooked</PackageRequired>
+    <ModuleRequired Version="0.01">Digest::MD5</ModuleRequired>
     <Vendor>Perl-Services.de</Vendor>
     <URL>http://www.perl-services.de</URL>
     <Description Lang="en">Test sopm command</Description>
