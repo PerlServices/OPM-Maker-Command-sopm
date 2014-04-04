@@ -11,8 +11,8 @@ use File::Basename;
 use_ok 'OTRS::OPM::Maker::Command::sopm';
 
 my $dir  = File::Spec->rel2abs( dirname __FILE__ );
-my $json = File::Spec->catfile( $dir, 'Test.json' );
-my $sopm = File::Spec->catfile( $dir, 'Test.sopm' );
+my $json = File::Spec->catfile( $dir, 'Intro.json' );
+my $sopm = File::Spec->catfile( $dir, 'Intro.sopm' );
 
 OTRS::OPM::Maker::Command::sopm::execute( undef, { config => $json }, [ $dir ] );
 
@@ -21,8 +21,8 @@ ok -e $sopm;
 my $content = do{ local (@ARGV, $/) = $sopm; <> };
 my $check   = q~<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <CVS>$Id: Test.sopm,v 1.1.1.1 2011/04/15 07:49:58 rb Exp $</CVS>
-    <Name>Test</Name>
+    <CVS>$Id: Intro.sopm,v 1.1.1.1 2011/04/15 07:49:58 rb Exp $</CVS>
+    <Name>Intro</Name>
     <Version>0.0.3</Version>
     <Framework>3.0.x</Framework>
     <Framework>3.1.x</Framework>
@@ -73,6 +73,15 @@ my $check   = q~<?xml version="1.0" encoding="utf-8" ?>
         <TableDrop Name="opar_test" />
 
     </DatabaseUninstall>
+    <IntroInstall Type="post"><![CDATA[
+            Test
+        ]]></IntroInstall>
+    
+    <IntroInstall Type="pre" Lang="en" Title="Testtitle"><![CDATA[
+            Test<br />
+<br />
+        ]]></IntroInstall>
+    
 </otrs_package>
 ~;
 

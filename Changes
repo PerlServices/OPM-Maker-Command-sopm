@@ -1,6 +1,11 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.19 2014-04-04
+
+     + improved handling for Intro tags
+     + added tests
+
 1.18 2013-10-31
 
      + fix bug in "<...Required>": the required version wasn't added
