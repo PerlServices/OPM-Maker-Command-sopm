@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.19;
+our $VERSION = 1.20;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -176,7 +176,7 @@ sub execute {
     if ( %tables_to_delete ) {
         my @actions;
         
-        for my $table ( keys %tables_to_delete ) {
+        for my $table ( sort keys %tables_to_delete ) {
             push @actions, _TableDrop({ name => $table });
         }
         
@@ -225,8 +225,7 @@ sub _IntroTemplate {
 
     return qq~    <Intro$type Type="$phase"$lang$title$version><![CDATA[
             $text
-        ]]></Intro$type>
-    ~;
+    ]]></Intro$type>~;
 }
 
 sub _CodeTemplate {
@@ -301,7 +300,7 @@ sub _TableDrop {
 
     my $table = $action->{name};
 
-    return '        <TableDrop Name="' . $table . '" />' . "\n";
+    return '        <TableDrop Name="' . $table . '" />';
 }
 
 sub _TableCreate {
@@ -328,10 +327,10 @@ sub _TableCreate {
     UNIQUE:
     for my $unique ( @{ $action->{unique} || [] } ) {
         my $table = $unique->{name};
-        $string .= '            <Unique Name="' . join( "_", @{$unique->{columns} || ["unique$table"] } ) . '">' . "\n";
+        $string .= '            <Unique Name="' . ($unique->{id} || join( "_", @{$unique->{columns} || ["unique$table"] } ) ) . '">' . "\n";
 
         for my $column ( @{ $unique->{columns} || [] } ) {
-            $string .= '                <UniqueColumn Name="' . $column . '" />';
+            $string .= '                <UniqueColumn Name="' . $column . '" />' . "\n";
         }
 
         $string .= '            </Unique>' . "\n";

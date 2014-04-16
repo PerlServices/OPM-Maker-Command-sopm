@@ -36,6 +36,8 @@ my $check   = q~<?xml version="1.0" encoding="utf-8" ?>
     <Filelist>
         <File Permission="644" Location="01_simple_json.t" />
         <File Permission="644" Location="02_intro.t" />
+        <File Permission="644" Location="03_database.t" />
+        <File Permission="644" Location="Database.json" />
         <File Permission="644" Location="Intro.json" />
         <File Permission="644" Location="Test.json" />
     </Filelist>
@@ -71,7 +73,6 @@ my $check   = q~<?xml version="1.0" encoding="utf-8" ?>
     </DatabaseUpgrade>
     <DatabaseUninstall Type="pre">
         <TableDrop Name="opar_test" />
-
     </DatabaseUninstall>
 </otrs_package>
 ~;

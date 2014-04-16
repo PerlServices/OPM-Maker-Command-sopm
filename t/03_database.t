@@ -11,8 +11,8 @@ use File::Basename;
 use_ok 'OTRS::OPM::Maker::Command::sopm';
 
 my $dir  = File::Spec->rel2abs( dirname __FILE__ );
-my $json = File::Spec->catfile( $dir, 'Intro.json' );
-my $sopm = File::Spec->catfile( $dir, 'Intro.sopm' );
+my $json = File::Spec->catfile( $dir, 'Database.json' );
+my $sopm = File::Spec->catfile( $dir, 'Database.sopm' );
 
 OTRS::OPM::Maker::Command::sopm::execute( undef, { config => $json }, [ $dir ] );
 
@@ -21,8 +21,8 @@ ok -e $sopm;
 my $content = do{ local (@ARGV, $/) = $sopm; <> };
 my $check   = q~<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <CVS>$Id: Intro.sopm,v 1.1.1.1 2011/04/15 07:49:58 rb Exp $</CVS>
-    <Name>Intro</Name>
+    <CVS>$Id: Database.sopm,v 1.1.1.1 2011/04/15 07:49:58 rb Exp $</CVS>
+    <Name>Database</Name>
     <Version>0.0.3</Version>
     <Framework>3.0.x</Framework>
     <Framework>3.1.x</Framework>
@@ -46,6 +46,22 @@ my $check   = q~<?xml version="1.0" encoding="utf-8" ?>
             <Column Name="id" Required="true" Type="INTEGER" AutoIncrement="true" PrimaryKey="true" />
             <Column Name="object_id" Required="true" Type="INTEGER" />
             <Column Name="object_type" Required="true" Type="VARCHAR" Size="55" />
+            <Unique Name="id_object_id">
+                <UniqueColumn Name="id" />
+                <UniqueColumn Name="object_id" />
+            </Unique>
+            <ForeignKey ForeignTable="system_user">
+                <Reference Local="object_id" Foreign="id" />
+            </ForeignKey>
+        </TableCreate>
+        <TableCreate Name="opar_test_2">
+            <Column Name="id" Required="true" Type="INTEGER" AutoIncrement="true" PrimaryKey="true" />
+            <Column Name="object_id" Required="true" Type="INTEGER" />
+            <Column Name="object_type" Required="true" Type="VARCHAR" Size="55" />
+            <Unique Name="my_unique">
+                <UniqueColumn Name="id" />
+                <UniqueColumn Name="object_id" />
+            </Unique>
             <ForeignKey ForeignTable="system_user">
                 <Reference Local="object_id" Foreign="id" />
             </ForeignKey>
@@ -73,14 +89,8 @@ my $check   = q~<?xml version="1.0" encoding="utf-8" ?>
     </DatabaseUpgrade>
     <DatabaseUninstall Type="pre">
         <TableDrop Name="opar_test" />
+        <TableDrop Name="opar_test_2" />
     </DatabaseUninstall>
-    <IntroInstall Type="post"><![CDATA[
-            Test
-    ]]></IntroInstall>
-    <IntroInstall Type="pre" Lang="en" Title="Testtitle"><![CDATA[
-            Test<br />
-<br />
-    ]]></IntroInstall>
 </otrs_package>
 ~;
 

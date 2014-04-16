@@ -1,6 +1,11 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.20 2014-04-17
+
+     + improved handling of "Uniques" in table creates
+     + added tests
+
 1.19 2014-04-04
 
      + improved handling for Intro tags
