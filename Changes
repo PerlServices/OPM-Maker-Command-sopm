@@ -1,6 +1,11 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.21 2014-05-09
+
+     + added xml comment that the .sopm was generated
+     + made CVS tag optional
+
 1.20 2014-04-17
 
      + improved handling of "Uniques" in table creates
