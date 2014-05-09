@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Test::More;
+use Test::LongString;
 
 use File::Spec;
 use File::Basename;
@@ -93,6 +94,6 @@ my $check   = qq~<?xml version="1.0" encoding="utf-8" ?>
 </otrs_package>
 ~;
 
-is $content, $check;
+is_string $content, $check;
 
 done_testing();
