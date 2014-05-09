@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.20;
+our $VERSION = 1.21;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -195,15 +195,15 @@ sub execute {
         push @xml_parts, _IntroTemplate( $intro );
     }
     
-    my $xml = sprintf qq~<?xml version="1.0" encoding="utf-8" ?>
+    my $xml = sprintf q~<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm ($VERSION) -->
+    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (%s) -->
     <Name>%s</Name>
     <Version>%s</Version>
 %s
 </otrs_package>
 ~, 
-    $name,
+    $VERSION,
     $name,
     $json->{version},
     join( "\n", @xml_parts );
