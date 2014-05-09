@@ -197,7 +197,7 @@ sub execute {
     
     my $xml = sprintf qq~<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <CVS>\$Id: %s.sopm,v 1.1.1.1 2011/04/15 07:49:58 rb Exp \$</CVS>
+    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm ($VERSION) -->
     <Name>%s</Name>
     <Version>%s</Version>
 %s
