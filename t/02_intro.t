@@ -14,6 +14,12 @@ my $dir  = File::Spec->rel2abs( dirname __FILE__ );
 my $json = File::Spec->catfile( $dir, 'Intro.json' );
 my $sopm = File::Spec->catfile( $dir, 'Intro.sopm' );
 
+my @files = <$dir/*.sopm>;
+unlink @files;
+
+my @files_check = <$dir/*.sopm>;
+ok !@files_check;
+
 OTRS::OPM::Maker::Command::sopm::execute( undef, { config => $json }, [ $dir ] );
 
 ok -e $sopm;
@@ -87,9 +93,5 @@ my $check   = qq~<?xml version="1.0" encoding="utf-8" ?>
 ~;
 
 is $content, $check;
-
-unlink $sopm;
-ok !-e $sopm;
-
 
 done_testing();
