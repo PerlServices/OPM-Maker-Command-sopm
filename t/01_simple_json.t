@@ -18,10 +18,12 @@ OTRS::OPM::Maker::Command::sopm::execute( undef, { config => $json }, [ $dir ] )
 
 ok -e $sopm;
 
+my $version = $OTRS::OPM::Maker::Command::sopm::VERSION;
+
 my $content = do{ local (@ARGV, $/) = $sopm; <> };
-my $check   = q~<?xml version="1.0" encoding="utf-8" ?>
+my $check   = qq~<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <CVS>$Id: Test.sopm,v 1.1.1.1 2011/04/15 07:49:58 rb Exp $</CVS>
+    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm ($version) -->
     <Name>Test</Name>
     <Version>0.0.3</Version>
     <Framework>3.0.x</Framework>
