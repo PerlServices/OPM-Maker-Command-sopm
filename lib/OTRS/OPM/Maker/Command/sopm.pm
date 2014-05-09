@@ -23,12 +23,13 @@ sub abstract {
 }
 
 sub usage_desc {
-    return "opmbuild sopm [--config <json_file>] <path_to_module>";
+    return "opmbuild sopm [--config <json_file>] [--cvs] <path_to_module>";
 }
 
 sub opt_spec {
     return (
         [ 'config=s', 'JSON file that provides all the metadata' ],
+        [ 'cvs'     , 'Add CVS tag to .sopm' ],
     );
 }
 
@@ -194,16 +195,22 @@ sub execute {
     for my $intro ( @{ $json->{intro} || [] } ) {
         push @xml_parts, _IntroTemplate( $intro );
     }
+
+    my $cvs = "";
+    if ( $opt->{cvs} ) {
+        $cvs = sprintf qq~\n    <CVS>\$Id: %s.sopm,v 1.1.1.1 2011/04/15 07:49:58 rb Exp \$</CVS>~, $name;
+    }
     
     my $xml = sprintf q~<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (%s) -->
+    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (%s) -->%s
     <Name>%s</Name>
     <Version>%s</Version>
 %s
 </otrs_package>
 ~, 
     $VERSION,
+    $cvs,
     $name,
     $json->{version},
     join( "\n", @xml_parts );

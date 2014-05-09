@@ -45,6 +45,7 @@ my $check   = qq~<?xml version="1.0" encoding="utf-8" ?>
         <File Permission="644" Location="01_simple_json.t" />
         <File Permission="644" Location="02_intro.t" />
         <File Permission="644" Location="03_database.t" />
+        <File Permission="644" Location="04_cvs.t" />
         <File Permission="644" Location="Database.json" />
         <File Permission="644" Location="Intro.json" />
         <File Permission="644" Location="Test.json" />
