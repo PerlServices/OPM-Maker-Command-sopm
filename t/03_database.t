@@ -87,10 +87,30 @@ my $check   = qq~<?xml version="1.0" encoding="utf-8" ?>
             <Data Key="change_time" Type="Quote"><![CDATA[2012-10-18 00:00:00]]></Data>
             <Data Key="change_by">1</Data>
         </Insert>
+        <Insert Table="ticket_history_type">
+            <Data Key="name" Type="Quote"><![CDATA[test1
+test2]]></Data>
+            <Data Key="comments" Type="Quote"><![CDATA[test]]></Data>
+            <Data Key="valid_id">1</Data>
+            <Data Key="create_time" Type="Quote"><![CDATA[2012-10-18 00:00:00]]></Data>
+            <Data Key="create_by">1</Data>
+            <Data Key="change_time" Type="Quote"><![CDATA[2012-10-18 00:00:00]]></Data>
+            <Data Key="change_by">1</Data>
+        </Insert>
     </DatabaseInstall>
     <DatabaseUpgrade Type="post">
         <Insert Table="ticket_history_type" Version="0.0.2">
             <Data Key="name" Type="Quote"><![CDATA[teest]]></Data>
+            <Data Key="comments" Type="Quote"><![CDATA[test]]></Data>
+            <Data Key="valid_id">1</Data>
+            <Data Key="create_time" Type="Quote"><![CDATA[2012-10-18 00:00:00]]></Data>
+            <Data Key="create_by">1</Data>
+            <Data Key="change_time" Type="Quote"><![CDATA[2012-10-18 00:00:00]]></Data>
+            <Data Key="change_by">1</Data>
+        </Insert>
+        <Insert Table="ticket_history_type" Version="0.0.2">
+            <Data Key="name" Type="Quote"><![CDATA[test1
+test2]]></Data>
             <Data Key="comments" Type="Quote"><![CDATA[test]]></Data>
             <Data Key="valid_id">1</Data>
             <Data Key="create_time" Type="Quote"><![CDATA[2012-10-18 00:00:00]]></Data>
