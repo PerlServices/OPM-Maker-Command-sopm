@@ -16,7 +16,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.21;
+our $VERSION = 1.23;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -44,6 +44,10 @@ sub validate_args {
             do{ $opt->{config} = $json_files[0] };
     }
     
+    if ( !$opt->{config} ) {
+        $self->usage_error( 'Please specify the config file to use' );
+    }
+    
     my $config = Path::Class::File->new( $opt->{config} );
     my $json = JSON->new->relaxed;
     my $json_text = $config->slurp;
@@ -52,6 +56,11 @@ sub validate_args {
 
 sub execute {
     my ($self, $opt, $args) = @_;
+
+    if ( !$opt->{config} ) {
+        print $self->usage->text;
+        return;
+    }
     
     my $config    = Path::Class::File->new( $opt->{config} );
     my $json_text = $config->slurp;
@@ -126,11 +135,12 @@ sub execute {
     );
 
     my %action_code = (
-        TableCreate  => \&_TableCreate,
-        Insert       => \&_Insert,
-        TableDrop    => \&_TableDrop,
-        ColumnAdd    => \&_ColumnAdd,
-        ColumnChange => \&_ColumnChange,
+        TableCreate      => \&_TableCreate,
+        Insert           => \&_Insert,
+        TableDrop        => \&_TableDrop,
+        ColumnAdd        => \&_ColumnAdd,
+        ColumnChange     => \&_ColumnChange,
+        ForeignKeyCreate => \&_ForeignKeyCreate,
     );
     
     my %tables_to_delete;
@@ -381,6 +391,31 @@ sub _ColumnAdd {
             ( $column->{size} ? ' Size="' . $column->{size} . '"' : "" ),
             ( $column->{auto_increment} ? ' AutoIncrement="true"' : "" ),
             ( $column->{primary_key} ? ' PrimaryKey="true"' : "" ),
+    }
+
+    $string .= '        </TableAlter>';
+
+    return $string;
+}
+
+sub _ForeignKeyCreate {
+    my ($action) = @_;
+
+    my $table   = $action->{name};
+    my $version = $action->{version};
+
+    my $version_string = $version ? ' Version="' . $version . '"' : '';
+
+    my $string = '        <TableAlter Name="' . $table . '"' . $version_string . ">\n";
+
+    COLUMN:
+    for my $reference ( @{ $action->{references} || [] } ) {
+        $string .= sprintf '            <ForeignKeyCreate ForeignTable="%s">
+                <Reference Local="%s" Foreign="%s" />
+            </ForeignKeyCreate>' . "\n",
+            $reference->{name},
+            $reference->{local},
+            $reference->{foreign};
     }
 
     $string .= '        </TableAlter>';

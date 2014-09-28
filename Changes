@@ -1,6 +1,10 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.23 2014-09-28
+
+    + added support for ForeignKeyCreate
+
 1.21 2014-05-09
 
      + added xml comment that the .sopm was generated
