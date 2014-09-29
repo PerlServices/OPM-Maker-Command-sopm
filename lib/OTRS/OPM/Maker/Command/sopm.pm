@@ -5,6 +5,7 @@ use warnings;
 
 # ABSTRACT: Build .sopm file based on metadata
 
+use Carp;
 use File::Find::Rule;
 use File::Basename;
 use File::Spec;
@@ -16,7 +17,7 @@ use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
 
-our $VERSION = 1.24;
+our $VERSION = 1.25;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -333,10 +334,11 @@ sub _TableCreate {
 
     COLUMN:
     for my $column ( @{ $action->{columns} || [] } ) {
+        my $type = _TypeCheck( $column->{type}, 'TableCreate' );
         $string .= sprintf '            <Column Name="%s" Required="%s" Type="%s"%s%s%s />' . "\n",
             $column->{name},
             $column->{required},
-            $column->{type},
+            $type,
             ( $column->{size} ? ' Size="' . $column->{size} . '"' : "" ),
             ( $column->{auto_increment} ? ' AutoIncrement="true"' : "" ),
             ( $column->{primary_key} ? ' PrimaryKey="true"' : "" ),
@@ -385,10 +387,11 @@ sub _ColumnAdd {
 
     COLUMN:
     for my $column ( @{ $action->{columns} || [] } ) {
+        my $type = _TypeCheck( $column->{type}, 'ColumnAdd' );
         $string .= sprintf '            <ColumnAdd Name="%s" Required="%s" Type="%s"%s%s%s />' . "\n",
             $column->{name},
             $column->{required},
-            $column->{type},
+            $type,
             ( $column->{size} ? ' Size="' . $column->{size} . '"' : "" ),
             ( $column->{auto_increment} ? ' AutoIncrement="true"' : "" ),
             ( $column->{primary_key} ? ' PrimaryKey="true"' : "" ),
@@ -436,11 +439,12 @@ sub _ColumnChange {
 
     COLUMN:
     for my $column ( @{ $action->{columns} || [] } ) {
+        my $type = _TypeCheck( $column->{type}, 'ColumnChange' );
         $string .= sprintf '            <ColumnChange NameNew="%s" NameOld="%s" Required="%s" Type="%s"%s%s%s />' . "\n",
             $column->{new_name},
             $column->{old_name},
             $column->{required},
-            $column->{type},
+            $type,
             ( $column->{size} ? ' Size="' . $column->{size} . '"' : "" ),
             ( $column->{auto_increment} ? ' AutoIncrement="true"' : "" ),
             ( $column->{primary_key} ? ' PrimaryKey="true"' : "" ),
@@ -449,6 +453,26 @@ sub _ColumnChange {
     $string .= '        </TableAlter>';
 
     return $string;
+}
+
+sub _TypeCheck {
+    my ($type, $action) = @_;
+
+    my %types = (
+        DATE     => 1,
+        SMALLINT => 1,
+        BIGINT   => 1,
+        INTEGER  => 1,
+        DECIMAL  => 1,
+        VARCHAR  => 1,
+        LONGBLOB => 1,
+    );
+
+    if ( !$types{$type} ) {
+        croak "$type is not allowed in $action. Allowed types: ", join ', ', sort keys %types;
+    }
+
+    return $type;
 }
 
 1;

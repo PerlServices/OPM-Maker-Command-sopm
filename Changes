@@ -1,6 +1,10 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.25 2014-09-29
+
+    + check column types
+
 1.24 2014-09-28
 
     + added support for "multiline" inserts
