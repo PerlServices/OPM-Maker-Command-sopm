@@ -1,6 +1,19 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.26 2014-12-09
+
+    [IMPROVEMENTS]
+    * Add warnings when OTRS 3.x files are found (.dtl) and OTRS 4.0 is specified
+    * Update packagesetup routine for OTRS 4.0
+    * Add warning when OTRS 3.x and OTRS 4.x are specified as framework versions
+
+    [TESTS]
+    * moved basic tests to t/base/
+    * new warnings tests in t/warnings/
+    * add tests for OTRS4
+    * add tests for CodeInstall/-Upgrade/-Uninstall
+
 1.25 2014-09-29
 
     + check column types
