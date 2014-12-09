@@ -16,6 +16,8 @@ use XML::LibXML;
 use XML::LibXML::PrettyPrint;
 
 use OTRS::OPM::Maker -command;
+use OTRS::OPM::Maker::Utils::OTRS3;
+use OTRS::OPM::Maker::Utils::OTRS4;
 
 our $VERSION = 1.25;
 
@@ -74,18 +76,35 @@ sub execute {
     # check needed info
     for my $needed (qw(name version framework)) {
         if ( !$json->{$needed} ) {
-            print STDERR "Need $needed in config file";
+            carp "Need $needed in config file";
             exit 1;
         }
     }
     
     my @xml_parts;
+    my %major_versions;
 
     {
         for my $framework ( @{ $json->{framework} } ) {
             push @xml_parts, "    <Framework>$framework</Framework>";
+
+            my $major_version = (split /\./, $framework)[0];
+            $major_versions{$major_version}++;
+        }
+
+        if ( 2 <= keys %major_versions ) {
+            carp "Two major versions declared in framework settings. Those might be incompatible.\n";
         }
     }
+
+    my %utils_versions = (
+        '3' => 'OTRS3',
+        '4' => 'OTRS4',
+    );
+
+    my ($max) = sort{ $b <=> $a }keys %major_versions;
+    my $mod   = $utils_versions{$max} || $utils_versions{3};
+    my $utils = 'OTRS::OPM::Maker::Utils::' . $mod;
 
     if ( $json->{requires} ) {
         {
@@ -114,6 +133,7 @@ sub execute {
         push @xml_parts, sprintf '    <License>%s</License>', $json->{license};
     }
 
+    # create filelist
     {
         my @files = File::Find::Rule->file->in( '.' );
 
@@ -123,6 +143,8 @@ sub execute {
             $_ !~ m{[\\/]\.} &&
             $_ ne $json->{name} . '.sopm'
         }sort @files;
+
+        $utils->filecheck( \@files );
 
         push @xml_parts, 
             sprintf "    <Filelist>\n%s\n    </Filelist>",
@@ -200,7 +222,11 @@ sub execute {
 
     for my $code ( @{ $json->{code} || [] } ) {
         $code->{type} = 'Code' . $code->{type};
-        push @xml_parts, _CodeTemplate( $code->{type}, $code->{version}, $code->{function} || $code->{type} );
+        push @xml_parts, $utils->packagesetup(
+            $code->{type},
+            $code->{version},
+            $code->{function} || $code->{type},
+        );
     }
 
     for my $intro ( @{ $json->{intro} || [] } ) {
@@ -244,47 +270,6 @@ sub _IntroTemplate {
     return qq~    <Intro$type Type="$phase"$lang$title$version><![CDATA[
             $text
     ]]></Intro$type>~;
-}
-
-sub _CodeTemplate {
-    my ($type, $version, $function) = @_;
-
-    $version = $version ? ' Version="' . $version . '"' : '';
-
-    return qq~    <$type Type="post"$version><![CDATA[
-        # define function name
-        my \$FunctionName = '$function';
-
-        # create the package name
-        my \$CodeModule = 'var::packagesetup::' . \$Param{Structure}->{Name}->{Content};
-
-        # load the module
-        if ( \$Self->{MainObject}->Require(\$CodeModule) ) {
-
-            # create new instance
-            my \$CodeObject = \$CodeModule->new( %{\$Self} );
-
-            if (\$CodeObject) {
-
-                # start methode
-                if ( !\$CodeObject->\$FunctionName(%{\$Self}) ) {
-                    \$Self->{LogObject}->Log(
-                        Priority => 'error',
-                        Message  => "Could not call method \$FunctionName() on \$CodeModule.pm."
-                    );
-                }
-            }
-
-            # error handling
-            else {
-                \$Self->{LogObject}->Log(
-                    Priority => 'error',
-                    Message  => "Could not call method new() on \$CodeModule.pm."
-                );
-            }
-        }
-
-    ]]></$type>~;
 }
 
 sub _Insert {
