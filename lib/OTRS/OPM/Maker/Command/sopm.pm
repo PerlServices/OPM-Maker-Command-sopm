@@ -474,8 +474,119 @@ sub _TypeCheck {
 
 1;
 
+=head1 DESCRIPTION
+
+SOPM files are used for OTRS addon creation. They define some metadata like the vendor, their URL, packages required or required Perl modules. 
+It is an XML file and it's no fun to create it. It not uncommon that the list of files included in the addon is not updated before the addon is built and released.
+
+That's why this package exists. You can define the metadata and stuff like database changes in a JSON file and the file list is created automatically. And you don't have to write the XML tags repeatedly.
+
+=head1 INSTALLATION PHASES
+
+When an OTRS addon is installed, it happens in several phases
+
+=over 4
+
+=item 1 CodeInstall - type "pre"
+
+=item 1 DatabaseInstall - type "pre"
+
+=item 1 Files are installed
+
+=item 1 Include SysConfig
+
+=item 1 DatabaseInstall - type "post"
+
+=item 1 CodeInstall - type "post"
+
+=back
+
+These types are important in some cases and you'll see them later.
+
 =head1 CONFIGURATION
 
-You can configure this command with a JSON file:
+You can configure this command with a JSON file.
+
+=head2 A simple add on
+
+This configuration file defines only the metadata.
+
+ {
+    "name": "Test",
+    "version": "0.0.3",
+    "framework": [
+        "3.0.x"
+    ],
+    "vendor": {
+        "name":  "Perl-Services.de",
+        "url": "http://www.perl-services.de"
+    },
+    "license": "GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007",
+    "description" : {
+        "en": "Test sopm command"
+    }
+ }
+
+And this .sopm will be created (assuming the file exists)
+
+  <?xml version="1.0" encoding="utf-8" ?>
+  <otrs_package version="1.0">
+    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.27) -->
+    <Name>Test</Name>
+    <Version>0.0.3</Version>
+    <Framework>3.0.x</Framework>
+    <Vendor>Perl-Services.de</Vendor>
+    <URL>http://www.perl-services.de</URL>
+    <Description Lang="en">Test sopm command</Description>
+    <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
+    <Filelist>
+        <File Permission="644" Location="01_simple_json.t" />
+        <File Permission="644" Location="02_intro.t" />
+    </Filelist>
+  </otrs>
+
+=head2 Support more than one framework version
+
+If the module runs on several framework version, you can define them in the list of frameworks
+
+    "framework": [
+        "3.0.x",
+        "3.1.x",
+        "3.2.x",
+        "3.2.x"
+    ],
+
+And they will all be listed in the .sopm
+
+    <Framework>3.0.x</Framework>
+    <Framework>3.1.x</Framework>
+    <Framework>3.2.x</Framework>
+    <Framework>3.3.x</Framework>
+
+=head2 Required packages and modules
+
+Some addons depend on other addons and/or Perl modules. So it has to define those prerequesits.
+
+    "requires": {
+        "package" : {
+            "TicketOverviewHooked" : "3.2.1"
+        },
+        "module" : {
+            "Digest::MD5" : "0.01"
+        }
+    },
+
+Creates those tags
+
+    <PackageRequired Version="3.2.1">TicketOverviewHooked</PackageRequired>
+    <ModuleRequired Version="0.01">Digest::MD5</ModuleRequired>
+
+=head2 Database changes
+
+=head3 Create new table
+
+=head3 Insert stuff
+
+=head3 Change Column
 
 =cut
