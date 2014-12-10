@@ -11,6 +11,7 @@ use File::Basename;
 use File::Spec;
 use IO::File;
 use JSON;
+use List::Util qw(first);
 use Path::Class ();
 use XML::LibXML;
 use XML::LibXML::PrettyPrint;
@@ -143,6 +144,17 @@ sub execute {
             $_ !~ m{[\\/]\.} &&
             $_ ne $json->{name} . '.sopm'
         }sort @files;
+
+        if ( $json->{exclude_files} and 'ARRAY' eq ref $json->{exclude_files} ) {
+            for my $index ( reverse 0 .. $#files ) {
+                my $file     = $files[$index];
+                my $excluded = first {
+                    eval{ $file =~ /$_/ };
+                }@{ $json->{exclude_files} };
+
+                splice @files, $index, 1 if $excluded;
+            }
+        }
 
         $utils->filecheck( \@files );
 
