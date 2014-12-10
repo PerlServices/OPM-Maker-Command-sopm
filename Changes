@@ -1,6 +1,15 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.27 2014-12-10
+
+    [IMPROVEMENTS]
+    * Now you can exclude files from being included
+
+    [DOCUMENTATION]
+    * Add a description
+    * Add some basic examples
+
 1.26 2014-12-09
 
     [IMPROVEMENTS]
