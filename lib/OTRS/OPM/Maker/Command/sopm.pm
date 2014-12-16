@@ -512,15 +512,15 @@ When an OTRS addon is installed, it happens in several phases
 
 =item 1 CodeInstall - type "pre"
 
-=item 1 DatabaseInstall - type "pre"
+=item 2 DatabaseInstall - type "pre"
 
-=item 1 Files are installed
+=item 3 Files are installed
 
-=item 1 Include SysConfig
+=item 4 Include SysConfig
 
-=item 1 DatabaseInstall - type "post"
+=item 5 DatabaseInstall - type "post"
 
-=item 1 CodeInstall - type "post"
+=item 6 CodeInstall - type "post"
 
 =back
 
