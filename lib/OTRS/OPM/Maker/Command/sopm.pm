@@ -163,6 +163,29 @@ sub execute {
                 join "\n", map{ my $permission = $_ =~ /^bin/ ? 755 : 644; qq~        <File Permission="$permission" Location="$_" />~ }@files;
     }
 
+    # changelog
+    {
+        CHANGE:
+        for my $change ( @{ $json->{changes} || [] } ) {
+            my $version = '';
+            my $date    = '';
+            my $info    = '';
+
+            if ( !ref $change ) {
+                $info = $change;
+            }
+            elsif ( 'HASH' eq ref $change ) {
+                $info    = $change->{message};
+                $version = sprintf( ' Version="%s"', $change->{version} ) if $change->{version};
+                $date    = sprintf( ' Date="%s"', $change->{date} )       if $change->{date};
+            }
+
+            next CHANGE if !length $info;
+
+            push @xml_parts, sprintf "    <ChangeLog%s%s>%s</ChangeLog>", $version, $date, $info;
+        }
+    }
+
     my %actions = (
         Install   => 'post',
         Uninstall => 'pre',
