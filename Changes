@@ -1,6 +1,14 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.28 2014-12-17
+
+    [IMPROVEMENTS]
+    * support changelog
+
+    [DOCUMENTATION]
+    * fix pod error
+
 1.27 2014-12-10
 
     [IMPROVEMENTS]
