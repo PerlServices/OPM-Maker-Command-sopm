@@ -20,7 +20,7 @@ use OTRS::OPM::Maker -command;
 use OTRS::OPM::Maker::Utils::OTRS3;
 use OTRS::OPM::Maker::Utils::OTRS4;
 
-our $VERSION = 1.28;
+our $VERSION = 1.29;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -204,6 +204,8 @@ sub execute {
     my %tables_to_delete;
     my %db_actions;
 
+    my $table_counter = 0;
+
     ACTION:
     for my $action ( @{ $json->{database} || [] } ) {
         my $tmp_version = $action->{version};
@@ -218,7 +220,7 @@ sub execute {
             
             if ( $op eq 'TableCreate' ) {
                 my $table = $action->{name};
-                $tables_to_delete{$table}++;
+                $tables_to_delete{$table} = $table_counter++;
             }
             elsif ( $op eq 'TableDrop' ) {
                 my $table = $action->{name};
@@ -245,7 +247,7 @@ sub execute {
     if ( %tables_to_delete ) {
         my @actions;
         
-        for my $table ( sort keys %tables_to_delete ) {
+        for my $table ( sort { $tables_to_delete{$b} <=> $tables_to_delete{$a} }keys %tables_to_delete ) {
             push @actions, _TableDrop({ name => $table });
         }
         
