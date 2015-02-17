@@ -1,6 +1,12 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.29 2015-02-17
+
+    [IMPROVEMENTS]
+    * fix db bug: table drops were added in alphabetical order, now they are added in
+      reverse order of definition as they might depend on each other
+
 1.28 2014-12-17
 
     [IMPROVEMENTS]
