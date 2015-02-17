@@ -121,8 +121,8 @@ test2]]></Data>
         </Insert>
     </DatabaseUpgrade>
     <DatabaseUninstall Type="pre">
-        <TableDrop Name="opar_test" />
         <TableDrop Name="opar_test_2" />
+        <TableDrop Name="opar_test" />
     </DatabaseUninstall>
 </otrs_package>
 ~;
