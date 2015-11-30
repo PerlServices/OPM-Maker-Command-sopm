@@ -20,7 +20,7 @@ use OTRS::OPM::Maker -command;
 use OTRS::OPM::Maker::Utils::OTRS3;
 use OTRS::OPM::Maker::Utils::OTRS4;
 
-our $VERSION = 1.29;
+our $VERSION = 1.30;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -199,6 +199,7 @@ sub execute {
         ColumnAdd        => \&_ColumnAdd,
         ColumnChange     => \&_ColumnChange,
         ForeignKeyCreate => \&_ForeignKeyCreate,
+        ForeignKeyDrop   => \&_ForeignKeyDrop,
     );
     
     my %tables_to_delete;
@@ -439,6 +440,31 @@ sub _ForeignKeyCreate {
         $string .= sprintf '            <ForeignKeyCreate ForeignTable="%s">
                 <Reference Local="%s" Foreign="%s" />
             </ForeignKeyCreate>' . "\n",
+            $reference->{name},
+            $reference->{local},
+            $reference->{foreign};
+    }
+
+    $string .= '        </TableAlter>';
+
+    return $string;
+}
+
+sub _ForeignKeyDrop {
+    my ($action) = @_;
+
+    my $table   = $action->{name};
+    my $version = $action->{version};
+
+    my $version_string = $version ? ' Version="' . $version . '"' : '';
+
+    my $string = '        <TableAlter Name="' . $table . '"' . $version_string . ">\n";
+
+    COLUMN:
+    for my $reference ( @{ $action->{references} || [] } ) {
+        $string .= sprintf '            <ForeignKeyDrop ForeignTable="%s">
+                <Reference Local="%s" Foreign="%s" />
+            </ForeignKeyDrop>' . "\n",
             $reference->{name},
             $reference->{local},
             $reference->{foreign};
