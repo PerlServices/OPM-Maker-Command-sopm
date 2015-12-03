@@ -20,7 +20,7 @@ use OTRS::OPM::Maker -command;
 use OTRS::OPM::Maker::Utils::OTRS3;
 use OTRS::OPM::Maker::Utils::OTRS4;
 
-our $VERSION = 1.30;
+our $VERSION = 1.31;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -197,6 +197,7 @@ sub execute {
         Insert           => \&_Insert,
         TableDrop        => \&_TableDrop,
         ColumnAdd        => \&_ColumnAdd,
+        ColumnDrop       => \&_ColumnDrop,
         ColumnChange     => \&_ColumnChange,
         ForeignKeyCreate => \&_ForeignKeyCreate,
         ForeignKeyDrop   => \&_ForeignKeyDrop,
@@ -217,6 +218,10 @@ sub execute {
             my $action_type = $version ? 'Upgrade' : 'Install';
             my $op          = $action->{type};
 
+            if ( $action->{uninstall} ) {
+                $action_type = 'Uninstall';
+            }
+
             next VERSION if !$action_code{$op};
             
             if ( $op eq 'TableCreate' ) {
@@ -233,7 +238,13 @@ sub execute {
         }
     }
     
-    for my $action_type ( qw/Install Upgrade/ ) {
+    if ( %tables_to_delete ) {
+        for my $table ( sort { $tables_to_delete{$b} <=> $tables_to_delete{$a} }keys %tables_to_delete ) {
+            push @{ $db_actions{Uninstall} }, _TableDrop({ name => $table });
+        }
+    }
+
+    for my $action_type ( qw/Install Upgrade Uninstall/ ) {
         
         next if !$db_actions{$action_type};
         
@@ -245,19 +256,6 @@ sub execute {
     </Database$action_type>~, join "\n", @{ $db_actions{$action_type} };
     }
     
-    if ( %tables_to_delete ) {
-        my @actions;
-        
-        for my $table ( sort { $tables_to_delete{$b} <=> $tables_to_delete{$a} }keys %tables_to_delete ) {
-            push @actions, _TableDrop({ name => $table });
-        }
-        
-        push @xml_parts,
-            sprintf qq~    <DatabaseUninstall Type="pre">
-%s
-    </DatabaseUninstall>~, join "\n", @actions;
-    }
-
     for my $code ( @{ $json->{code} || [] } ) {
         $code->{type} = 'Code' . $code->{type};
         push @xml_parts, $utils->packagesetup(
@@ -418,6 +416,26 @@ sub _ColumnAdd {
             ( $column->{size} ? ' Size="' . $column->{size} . '"' : "" ),
             ( $column->{auto_increment} ? ' AutoIncrement="true"' : "" ),
             ( $column->{primary_key} ? ' PrimaryKey="true"' : "" ),
+    }
+
+    $string .= '        </TableAlter>';
+
+    return $string;
+}
+
+sub _ColumnDrop {
+    my ($action) = @_;
+
+    my $table   = $action->{name};
+    my $version = $action->{version};
+
+    my $version_string = $version ? ' Version="' . $version . '"' : '';
+
+    my $string = '        <TableAlter Name="' . $table . '"' . $version_string . ">\n";
+
+    COLUMN:
+    for my $column ( @{ $action->{columns} || [] } ) {
+        $string .= sprintf qq~            <ColumnDrop Name="%s" />\n~, $column;
     }
 
     $string .= '        </TableAlter>';
