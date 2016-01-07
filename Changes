@@ -1,6 +1,11 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.32 2016-01-07
+
+    [IMPROVEMENTS]
+    * add support for changes_file in .json file to keep track of the changes in an extra file
+
 1.31 2015-12-03
 
     [IMPROVEMENTS]

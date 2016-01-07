@@ -20,7 +20,7 @@ use OTRS::OPM::Maker -command;
 use OTRS::OPM::Maker::Utils::OTRS3;
 use OTRS::OPM::Maker::Utils::OTRS4;
 
-our $VERSION = 1.31;
+our $VERSION = 1.32;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -149,7 +149,7 @@ sub execute {
             for my $index ( reverse 0 .. $#files ) {
                 my $file     = $files[$index];
                 my $excluded = first {
-                    eval{ $file =~ /$_/ };
+                    eval{ $file =~ /$_\z/ };
                 }@{ $json->{exclude_files} };
 
                 splice @files, $index, 1 if $excluded;
@@ -161,6 +161,33 @@ sub execute {
         push @xml_parts, 
             sprintf "    <Filelist>\n%s\n    </Filelist>",
                 join "\n", map{ my $permission = $_ =~ /^bin/ ? 755 : 644; qq~        <File Permission="$permission" Location="$_" />~ }@files;
+    }
+
+    if ( $json->{changes_file} && -f $config->dir . "/" . $json->{changes_file} ) {
+        my $changes_file = Path::Class::File->new( $config->dir, $json->{changes_file} );
+        my $lines        = $changes_file->slurp( iomode => '<:encoding(UTF-8)' );
+
+        my @entries = grep{ ( $_ // '' ) ne '' }split m{
+            (?:\s+)?
+            (                         # headline with version and date
+                ^
+                \d+\.\d+ (?:\.\d+)?   # version
+                \s+ - \s+
+                \d{4}-\d{2}-\d{2} \s  # date
+                \d{2}:\d{2}:\d{2}     # time
+            )
+            \s+
+        }xms, $lines;
+
+        while ( @entries ) {
+            my ($header, $desc) = ( shift(@entries), shift(@entries) );
+
+            my ($version, $date) = split /\s+-\s+/, $header // '';
+
+            $desc =~ s{\s+\z}{};
+
+            push @xml_parts, sprintf qq~    <ChangeLog Version="%s" Date="%s"><![CDATA[ %s ]]></ChangeLog>~, $version, $date, $desc;
+        }
     }
 
     # changelog
