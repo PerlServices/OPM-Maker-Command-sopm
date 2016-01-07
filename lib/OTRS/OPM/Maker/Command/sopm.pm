@@ -20,7 +20,7 @@ use OTRS::OPM::Maker -command;
 use OTRS::OPM::Maker::Utils::OTRS3;
 use OTRS::OPM::Maker::Utils::OTRS4;
 
-our $VERSION = 1.32;
+our $VERSION = 1.33;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -101,6 +101,7 @@ sub execute {
     my %utils_versions = (
         '3' => 'OTRS3',
         '4' => 'OTRS4',
+        '5' => 'OTRS4',
     );
 
     my ($max) = sort{ $b <=> $a }keys %major_versions;

@@ -1,6 +1,11 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.33 2016-01-07
+
+    [BUGFIX]
+    * When framework version is only OTRS5 the old OTRS3 utils module was loaded, now it loads the necessary OTRS4 utils module
+
 1.32 2016-01-07
 
     [IMPROVEMENTS]
