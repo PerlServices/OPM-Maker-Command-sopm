@@ -229,6 +229,8 @@ sub execute {
         ColumnChange     => \&_ColumnChange,
         ForeignKeyCreate => \&_ForeignKeyCreate,
         ForeignKeyDrop   => \&_ForeignKeyDrop,
+        UniqueDrop       => \&_UniqueDrop,
+        UniqueCreate     => \&_UniqueCreate,
     );
     
     my %tables_to_delete;
@@ -515,6 +517,47 @@ sub _ForeignKeyDrop {
             $reference->{local},
             $reference->{foreign};
     }
+
+    $string .= '        </TableAlter>';
+
+    return $string;
+}
+
+sub _UniqueCreate {
+    my ($action) = @_;
+
+    my $table   = $action->{name};
+    my $version = $action->{version};
+
+    my $version_string = $version ? ' Version="' . $version . '"' : '';
+
+    my $string = '        <TableAlter Name="' . $table . '"' . $version_string . ">\n";
+    $string   .= sprintf qq~            <UniqueCreate Name="%s">\n~, $action->{unique_name};
+
+    COLUMN:
+    for my $column ( @{ $action->{columns} || [] } ) {
+        $string .= sprintf qq~                <UniqueColumn Name="%s" />\n~,
+            $column;
+    }
+
+    $string .= qq~            </UniqueCreate>\n~;
+    $string .= '        </TableAlter>';
+
+    return $string;
+}
+
+sub _UniqueDrop {
+    my ($action) = @_;
+
+    my $table   = $action->{name};
+    my $version = $action->{version};
+
+    my $version_string = $version ? ' Version="' . $version . '"' : '';
+
+    my $string = '        <TableAlter Name="' . $table . '"' . $version_string . ">\n";
+
+    $string .= sprintf qq~            <UniqueDrop Name="%s" />\n~,
+        $action->{unique_name};
 
     $string .= '        </TableAlter>';
 

@@ -1,6 +1,11 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.34 2016-06-28
+
+    [IMPROVEMENTS]
+    * add support for UniqueCreate and UniqueDrop
+
 1.33 2016-01-07
 
     [BUGFIX]
