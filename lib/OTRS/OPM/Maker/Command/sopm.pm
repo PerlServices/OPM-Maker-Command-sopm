@@ -87,9 +87,22 @@ sub execute {
 
     {
         for my $framework ( @{ $json->{framework} } ) {
-            push @xml_parts, "    <Framework>$framework</Framework>";
+            my $version = $framework;
+            my $min     = '';
+            my $max     = '';
 
-            my $major_version = (split /\./, $framework)[0];
+            if ( 'HASH' eq ref $framework ) {
+                $version = $framework->{version};
+                $min     = $framework->{min};
+                $max     = $framework->{max};
+            }
+
+            push @xml_parts, sprintf "    <Framework%s%s>%s</Framework>",
+                ( $min ? qq~ Minimum="$min"~ : '' ),
+                ( $max ? qq~ Maximum="$max"~ : '' ),
+                $version;
+
+            my $major_version = (split /\./, $version)[0];
             $major_versions{$major_version}++;
         }
 
