@@ -1,6 +1,11 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.36 2016-12-01
+
+    [IMPROVEMENTS]
+    * add support for 'Minimum' and 'Maximum' framework version
+
 1.35 2016-07-03
 
     [MISC]
