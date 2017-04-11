@@ -1,5 +1,7 @@
 package OTRS::OPM::Maker::Command::sopm;
 
+use v5.10;
+
 use strict;
 use warnings;
 
@@ -118,6 +120,12 @@ sub execute {
     );
 
     my ($max) = sort{ $b <=> $a }keys %major_versions;
+
+    $json->{product} //= 'OTRS';
+    if ( uc $json->{product} eq 'KIX' ) {
+        $max = 5;
+    }
+
     my $mod   = $utils_versions{$max} || $utils_versions{3};
     my $utils = 'OTRS::OPM::Maker::Utils::' . $mod;
 
