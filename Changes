@@ -1,6 +1,12 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.37 2017-04-11
+
+    [IMPROVEMENTS]
+    * add support for KIX - just define 'product: KIX' in the JSON file
+      and CodeXXXX sections are created correctly
+
 1.36 2016-12-01
 
     [IMPROVEMENTS]
