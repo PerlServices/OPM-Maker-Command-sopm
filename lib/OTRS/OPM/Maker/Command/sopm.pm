@@ -313,6 +313,7 @@ sub execute {
             $code->{type},
             $code->{version},
             $code->{function} || $code->{type},
+            $code->{phase}
         );
     }
 

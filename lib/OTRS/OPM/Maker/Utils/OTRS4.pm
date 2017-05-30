@@ -7,11 +7,13 @@ use List::Util qw(first);
 use Carp;
 
 sub packagesetup {
-    my ($class, $type, $version, $function) = @_;
+    my ($class, $type, $version, $function, $runtype) = @_;
 
     $version = $version ? ' Version="' . $version . '"' : '';
 
-    return qq~    <$type Type="post"$version><![CDATA[
+    $runtype //= 'post';
+
+    return qq~    <$type Type="$runtype"$version><![CDATA[
         \$Kernel::OM->Get('var::packagesetup::' . \$Param{Structure}->{Name}->{Content} )->$function();
     ]]></$type>~;
 }
