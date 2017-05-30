@@ -1,6 +1,11 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.38 2017-05-30
+
+    [IMPROVEMENTS]
+    * now the phase when the code should be run can be defined
+
 1.37 2017-04-11
 
     [IMPROVEMENTS]
