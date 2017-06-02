@@ -308,6 +308,14 @@ sub execute {
     }
     
     for my $code ( @{ $json->{code} || [] } ) {
+        if ( !ref $code ) {
+            $code = {
+                type    => $code,
+                version => 0,
+                phase   => ( $code eq 'Uninstall' ? 'pre' : 'post' ),
+            };
+        }
+
         $code->{type} = 'Code' . $code->{type};
         push @xml_parts, $utils->packagesetup(
             $code->{type},
