@@ -22,7 +22,7 @@ use OTRS::OPM::Maker -command;
 use OTRS::OPM::Maker::Utils::OTRS3;
 use OTRS::OPM::Maker::Utils::OTRS4;
 
-our $VERSION = 1.38;
+our $VERSION = 1.39;
 
 sub abstract {
     return "build sopm file based on metadata";

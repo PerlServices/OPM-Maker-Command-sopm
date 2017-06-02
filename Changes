@@ -1,6 +1,11 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.39 2017-06-02
+
+    [IMPROVEMENTS]
+    * now  it is possible to just use 'code': ['Install','Uninstall',...] to create the CodeXXXX sections
+
 1.38 2017-05-30
 
     [IMPROVEMENTS]
