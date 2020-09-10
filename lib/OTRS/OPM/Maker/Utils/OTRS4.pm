@@ -1,5 +1,7 @@
 package OTRS::OPM::Maker::Utils::OTRS4;
 
+# ABSTRACT: helper functions for OTRS >= 4
+
 use strict;
 use warnings;
 
@@ -29,3 +31,12 @@ sub filecheck {
 }
 
 1;
+
+=head1 METHODS
+
+=head2 packagesetup
+
+=head2 filecheck
+
+=cut
+
