@@ -1,6 +1,11 @@
 History for OTRS::OPM::Maker::Command::sopm
 ===========================================
 
+1.41 2020-09-10
+
+    [IMPROVEMENTS]
+    * add ColumnDrops for all columns added to non-package tables
+
 1.40 2017-12-04
 
     [IMPROVEMENTS]
