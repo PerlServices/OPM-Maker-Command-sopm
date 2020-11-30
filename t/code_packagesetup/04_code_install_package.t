@@ -12,8 +12,8 @@ use File::Basename;
 use_ok 'OTRS::OPM::Maker::Command::sopm';
 
 my $dir  = File::Spec->rel2abs( dirname __FILE__ );
-my $json = File::Spec->catfile( $dir, 'Test.json' );
-my $sopm = File::Spec->catfile( $dir, 'Test.sopm' );
+my $json = File::Spec->catfile( $dir, 'TestInstall.json' );
+my $sopm = File::Spec->catfile( $dir, 'TestInstall.sopm' );
 
 my @files = <$dir/*.sopm>;
 unlink @files;
@@ -26,12 +26,13 @@ OTRS::OPM::Maker::Command::sopm::execute( undef, { config => $json }, [ $dir ] )
 ok -e $sopm;
 
 my $version = $OTRS::OPM::Maker::Command::sopm::VERSION;
+#diag $version;
 
 my $content = do{ local (@ARGV, $/) = $sopm; <> };
 my $check   = qq~<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
     <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm ($version) -->
-    <Name>Test</Name>
+    <Name>TestInstall</Name>
     <Version>0.0.3</Version>
     <Framework>4.0.x</Framework>
     <Vendor>Perl-Services.de</Vendor>
@@ -49,10 +50,10 @@ my $check   = qq~<?xml version="1.0" encoding="utf-8" ?>
         <File Permission="644" Location="TestPre3.json" />
     </Filelist>
     <CodeInstall Type="post"><![CDATA[
-        \$Kernel::OM->Get('var::packagesetup::' . \$Param{Structure}->{Name}->{Content} )->CodeInstall();
+        \$Kernel::OM->Get('var::packagesetup::' . 'OtherPackage' )->CodeInstall();
     ]]></CodeInstall>
     <CodeUninstall Type="post"><![CDATA[
-        \$Kernel::OM->Get('var::packagesetup::' . \$Param{Structure}->{Name}->{Content} )->CodeUninstall();
+        \$Kernel::OM->Get('var::packagesetup::' . 'OtherPackage' )->CodeUninstall();
     ]]></CodeUninstall>
 </otrs_package>
 ~;

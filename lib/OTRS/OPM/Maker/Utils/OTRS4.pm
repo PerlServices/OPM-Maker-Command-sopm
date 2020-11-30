@@ -9,14 +9,21 @@ use List::Util qw(first);
 use Carp;
 
 sub packagesetup {
-    my ($class, $type, $version, $function, $runtype) = @_;
+    my ($class, $type, $version, $function, $runtype, $package) = @_;
 
     $version = $version ? ' Version="' . $version . '"' : '';
 
     $runtype //= 'post';
 
+    if ( $package ) {
+        $package = sprintf "'%s'", $package;
+    }
+    else {
+        $package = '$Param{Structure}->{Name}->{Content}';
+    }
+
     return qq~    <$type Type="$runtype"$version><![CDATA[
-        \$Kernel::OM->Get('var::packagesetup::' . \$Param{Structure}->{Name}->{Content} )->$function();
+        \$Kernel::OM->Get('var::packagesetup::' . $package )->$function();
     ]]></$type>~;
 }
 
