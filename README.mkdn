@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/perlservices/OTRS-OPM-Maker-Command-sopm.svg?branch=master)](https://travis-ci.org/perlservices/OTRS-OPM-Maker-Command-sopm)
 [![Kwalitee status](http://cpants.cpanauthors.org/dist/OTRS-OPM-Maker-Command-sopm.png)](https://cpants.cpanauthors.org/dist/OTRS-OPM-Maker-Command-sopm)
 [![GitHub issues](https://img.shields.io/github/issues/perlservices/OTRS-OPM-Maker-Command-sopm.svg)](https://github.com/perlservices/OTRS-OPM-Maker-Command-sopm/issues)
-[![CPAN Cover Status](https://cpancoverbadge.perl-services.de/OTRS-OPM-Maker-Command-sopm-1.42)](https://cpancoverbadge.perl-services.de/OTRS-OPM-Maker-Command-sopm-1.42)
+[![CPAN Cover Status](https://cpancoverbadge.perl-services.de/OTRS-OPM-Maker-Command-sopm-1.43)](https://cpancoverbadge.perl-services.de/OTRS-OPM-Maker-Command-sopm-1.43)
 
 # NAME
 
@@ -9,7 +9,7 @@ OTRS::OPM::Maker::Command::sopm - Build .sopm file based on metadata
 
 # VERSION
 
-version 1.42
+version 1.43
 
 # DESCRIPTION
 

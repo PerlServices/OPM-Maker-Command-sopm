@@ -8,6 +8,8 @@ use warnings;
 use List::Util qw(first);
 use Carp;
 
+our $VERSION = 1.43;
+
 sub packagesetup {
     my ($class, $type, $version, $function, $runtype, $package) = @_;
 

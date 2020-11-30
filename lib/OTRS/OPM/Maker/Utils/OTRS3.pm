@@ -5,6 +5,8 @@ package OTRS::OPM::Maker::Utils::OTRS3;
 use strict;
 use warnings;
 
+our $VERSION = 1.43;
+
 sub packagesetup {
     my ($class, $type, $version, $function, $runtype, $package) = @_;
 
