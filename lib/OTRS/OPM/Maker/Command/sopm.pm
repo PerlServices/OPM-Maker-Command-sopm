@@ -687,7 +687,7 @@ sub _TypeCheck {
 =head1 DESCRIPTION
 
 SOPM files are used for OTRS addon creation. They define some metadata like the vendor, their URL, packages required or required Perl modules. 
-It is an XML file and it's no fun to create it. It not uncommon that the list of files included in the addon is not updated before the addon is built and released.
+It is an XML file and it's no fun to create it. It is not uncommon that the list of files included in the addon is not updated before the addon is built and released.
 
 That's why this package exists. You can define the metadata and stuff like database changes in a JSON file and the file list is created automatically. And you don't have to write the XML tags repeatedly.
 
