@@ -1,11 +1,11 @@
-package OTRS::OPM::Maker::Command::sopm;
+package OPM::Maker::Command::sopm;
 
 use v5.10;
 
 use strict;
 use warnings;
 
-# ABSTRACT: Build .sopm file based on metadata (DEPRECATED)
+# ABSTRACT: Build .sopm file based on metadata
 
 use Carp;
 use File::Find::Rule;
@@ -18,11 +18,9 @@ use Path::Class ();
 use XML::LibXML;
 use XML::LibXML::PrettyPrint;
 
-use OTRS::OPM::Maker -command;
-use OTRS::OPM::Maker::Utils::OTRS3;
-use OTRS::OPM::Maker::Utils::OTRS4;
-
-our $VERSION = 1.45;
+use OPM::Maker -command;
+use OPM::Maker::Utils::OTRS3;
+use OPM::Maker::Utils::OTRS4;
 
 sub abstract {
     return "build sopm file based on metadata";
@@ -136,7 +134,7 @@ sub execute {
     }
 
     my $mod   = $utils_versions{$product}->{$max} || $utils_versions{OTRS}->{3};
-    my $utils = 'OTRS::OPM::Maker::Utils::' . $mod;
+    my $utils = 'OPM::Maker::Utils::' . $mod;
 
     if ( $json->{requires} ) {
         {
@@ -372,14 +370,14 @@ sub execute {
     
     my $xml = sprintf q~<?xml version="1.0" encoding="utf-8" ?>
 <%s version="1.0">
-    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (%s) -->%s
+    <!-- GENERATED WITH OPM::Maker::Command::sopm (%s) -->%s
     <Name>%s</Name>
     <Version>%s</Version>
 %s
 </%s>
 ~, 
     $start_tag,
-    $VERSION,
+    __PACKAGE__->VERSION(),
     $cvs,
     $name,
     $json->{version},
@@ -420,7 +418,7 @@ sub _Insert {
     COLUMN:
     for my $column ( @{ $action->{columns} || [] } ) {
         my $value = ref $column->{value} ? join( "\n", @{ $column->{value} } ) : $column->{value};
-	$value //= '';
+        $value //= '';
 
         $string .= sprintf '            <Data Key="%s"%s>%s</Data>' . "\n",
             $column->{name},
@@ -682,18 +680,25 @@ sub _TypeCheck {
     return $type;
 }
 
+sub VERSION {
+    return $OPM::Maker::Command::sopm::VERSION || '1.0.0';
+}
+
 1;
 
 =head1 DESCRIPTION
 
-SOPM files are used for OTRS addon creation. They define some metadata like the vendor, their URL, packages required or required Perl modules. 
-It is an XML file and it's no fun to create it. It is not uncommon that the list of files included in the addon is not updated before the addon is built and released.
+SOPM files are used for ticket system addon creation (e.g. for Znuny, OTOBO, ((OTRS)) Community Edition).
+They define some metadata like the vendor, their URL, packages required or required Perl modules. 
+It is an XML file and it's no fun to create it. It is not uncommon that the list of files included in the
+addon is not updated before the addon is built and released.
 
-That's why this package exists. You can define the metadata and stuff like database changes in a JSON file and the file list is created automatically. And you don't have to write the XML tags repeatedly.
+That's why this package exists. You can define the metadata and stuff like database changes in a JSON file
+and the file list is created automatically. And you don't have to write the XML tags repeatedly.
 
 =head1 INSTALLATION PHASES
 
-When an OTRS addon is installed, it happens in several phases
+When an addon is installed, it happens in several phases
 
 =over 4
 
@@ -741,7 +746,7 @@ And this .sopm will be created (assuming the file exists)
 
   <?xml version="1.0" encoding="utf-8" ?>
   <otrs_package version="1.0">
-    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.27) -->
+    <!-- GENERATED WITH OPM::Maker::Command::sopm (1.27) -->
     <Name>Test</Name>
     <Version>0.0.3</Version>
     <Framework>3.0.x</Framework>
@@ -798,5 +803,9 @@ Creates those tags
 =head3 Insert stuff
 
 =head3 Change Column
+
+=head1 METHODS
+
+=head2 VERSION
 
 =cut

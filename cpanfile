@@ -9,7 +9,7 @@ requires "File::Spec" => "0";
 requires "IO::File" => "0";
 requires "JSON" => "2.27";
 requires "List::Util" => "1.33";
-requires "OTRS::OPM::Maker" => "0";
+requires "OPM::Maker" => "0";
 requires "Path::Class" => "0";
 requires "Test::Exception" => "0.35";
 requires "Test::LongString" => "0.15";
@@ -24,6 +24,9 @@ on 'configure' => sub {
 
 on 'develop' => sub {
     requires "Pod::Coverage::TrustPod" => "0";
+    requires "Test::BOM" => "0";
+    requires "Test::More" => "0.88";
+    requires "Test::NoTabs" => "0";
     requires "Test::Pod" => "1.41";
     requires "Test::Pod::Coverage" => "1.08";
 };

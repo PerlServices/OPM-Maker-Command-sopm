@@ -11,7 +11,7 @@ use File::Basename;
 
 use Capture::Tiny qw(:all);
 
-use_ok 'OTRS::OPM::Maker::Command::sopm';
+use_ok 'OPM::Maker::Command::sopm';
 
 my $dir          = File::Spec->rel2abs( dirname __FILE__ );
 my $warn_json    = File::Spec->catfile( $dir, 'Test.json' );
@@ -26,7 +26,7 @@ ok !@files_check;
 
 {
     my ($stdout, $stderr, @result) = capture {
-        OTRS::OPM::Maker::Command::sopm::execute( undef, { config => $warn_json }, [ $source_dir ] );
+        OPM::Maker::Command::sopm::execute( undef, { config => $warn_json }, [ $source_dir ] );
     };
 
     like $stderr,
@@ -36,7 +36,7 @@ ok !@files_check;
 
 {
     my ($stdout, $stderr, @result) = capture {
-        OTRS::OPM::Maker::Command::sopm::execute( undef, { config => $no_warn_json }, [ $source_dir ] );
+        OPM::Maker::Command::sopm::execute( undef, { config => $no_warn_json }, [ $source_dir ] );
     };
 
     unlike $stderr,

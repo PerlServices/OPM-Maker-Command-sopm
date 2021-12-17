@@ -1,14 +1,12 @@
-package OTRS::OPM::Maker::Utils::OTRS4;
+package OPM::Maker::Utils::OTRS4;
 
-# ABSTRACT: helper functions for OTRS >= 4
+# ABSTRACT: helper functions for ((OTRS)) Community Edition >= 4 
 
 use strict;
 use warnings;
 
 use List::Util qw(first);
 use Carp;
-
-our $VERSION = 1.44;
 
 sub packagesetup {
     my ($class, $type, $version, $function, $runtype, $package) = @_;

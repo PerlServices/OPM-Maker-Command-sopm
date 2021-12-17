@@ -9,7 +9,7 @@ use Test::LongString;
 use File::Spec;
 use File::Basename;
 
-use_ok 'OTRS::OPM::Maker::Command::sopm';
+use_ok 'OPM::Maker::Command::sopm';
 
 my $dir  = File::Spec->rel2abs( dirname __FILE__ );
 my $json = File::Spec->catfile( $dir, 'Test.json' );
@@ -21,16 +21,16 @@ unlink @files;
 my @files_check = <$dir/*.sopm>;
 ok !@files_check;
 
-OTRS::OPM::Maker::Command::sopm::execute( undef, { config => $json, cvs => 1 }, [ $dir ] );
+OPM::Maker::Command::sopm::execute( undef, { config => $json, cvs => 1 }, [ $dir ] );
 
 ok -e $sopm;
 
-my $version = $OTRS::OPM::Maker::Command::sopm::VERSION;
+my $version = $OPM::Maker::Command::sopm::VERSION;
 
 my $content = do{ local (@ARGV, $/) = $sopm; <> };
 my $check   = qq~<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm ($version) -->
+    <!-- GENERATED WITH OPM::Maker::Command::sopm ($version) -->
     <CVS>\$Id: Test.sopm,v 1.1.1.1 2011/04/15 07:49:58 rb Exp \$</CVS>
     <Name>Test</Name>
     <Version>0.0.3</Version>

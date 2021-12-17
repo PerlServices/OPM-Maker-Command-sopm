@@ -11,9 +11,9 @@ use File::Basename;
 use File::Temp qw(tempfile);
 use JSON;
 
-use_ok 'OTRS::OPM::Maker::Command::sopm';
+use_ok 'OPM::Maker::Command::sopm';
 
-diag $OTRS::OPM::Maker::Command::sopm::VERSION;
+diag $OPM::Maker::Command::sopm::VERSION;
 
 my $dir       = File::Spec->rel2abs( dirname __FILE__ );
 my $json_file = File::Spec->catfile( $dir, 'Test.json' );
@@ -79,7 +79,7 @@ for my $test ( @checks ) {
     close $fh;
 
     my $string = $test->{exception};
-    throws_ok{ OTRS::OPM::Maker::Command::sopm::execute( undef, { config => $conf }, [ $dir ] ) } qr/\Q$string\E/, $string;
+    throws_ok{ OPM::Maker::Command::sopm::execute( undef, { config => $conf }, [ $dir ] ) } qr/\Q$string\E/, $string;
 
     unlink $conf;
     ok !-e $conf;

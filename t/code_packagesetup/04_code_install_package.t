@@ -9,7 +9,7 @@ use Test::LongString;
 use File::Spec;
 use File::Basename;
 
-use_ok 'OTRS::OPM::Maker::Command::sopm';
+use_ok 'OPM::Maker::Command::sopm';
 
 my $dir  = File::Spec->rel2abs( dirname __FILE__ );
 my $json = File::Spec->catfile( $dir, 'TestInstall.json' );
@@ -21,17 +21,17 @@ unlink @files;
 my @files_check = <$dir/*.sopm>;
 ok !@files_check;
 
-OTRS::OPM::Maker::Command::sopm::execute( undef, { config => $json }, [ $dir ] );
+OPM::Maker::Command::sopm::execute( undef, { config => $json }, [ $dir ] );
 
 ok -e $sopm;
 
-my $version = $OTRS::OPM::Maker::Command::sopm::VERSION;
+my $version = $OPM::Maker::Command::sopm::VERSION;
 #diag $version;
 
 my $content = do{ local (@ARGV, $/) = $sopm; <> };
 my $check   = qq~<?xml version="1.0" encoding="utf-8" ?>
 <otrs_package version="1.0">
-    <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm ($version) -->
+    <!-- GENERATED WITH OPM::Maker::Command::sopm ($version) -->
     <Name>TestInstall</Name>
     <Version>0.0.3</Version>
     <Framework>4.0.x</Framework>

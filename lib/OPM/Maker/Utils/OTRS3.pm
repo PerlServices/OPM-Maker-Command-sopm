@@ -1,11 +1,9 @@
-package OTRS::OPM::Maker::Utils::OTRS3;
+package OPM::Maker::Utils::OTRS3;
 
 # ABSTRACT: Provide helper functions for OTRS <= 3
 
 use strict;
 use warnings;
-
-our $VERSION = 1.44;
 
 sub packagesetup {
     my ($class, $type, $version, $function, $runtype, $package) = @_;

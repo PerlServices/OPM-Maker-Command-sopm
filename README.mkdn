@@ -1,26 +1,29 @@
 [![Build Status](https://travis-ci.org/perlservices/OTRS-OPM-Maker-Command-sopm.svg?branch=master)](https://travis-ci.org/perlservices/OTRS-OPM-Maker-Command-sopm)
-[![Kwalitee status](https://cpants.cpanauthors.org/dist/OTRS-OPM-Maker-Command-sopm.png)](https://cpants.cpanauthors.org/dist/OTRS-OPM-Maker-Command-sopm)
+[![Kwalitee status](https://cpants.cpanauthors.org/dist/OPM-Maker-Command-sopm.png)](https://cpants.cpanauthors.org/dist/OPM-Maker-Command-sopm)
 [![GitHub issues](https://img.shields.io/github/issues/perlservices/OTRS-OPM-Maker-Command-sopm.svg)](https://github.com/perlservices/OTRS-OPM-Maker-Command-sopm/issues)
-[![CPAN Cover Status](https://cpancoverbadge.perl-services.de/OTRS-OPM-Maker-Command-sopm-1.45)](https://cpancoverbadge.perl-services.de/OTRS-OPM-Maker-Command-sopm-1.45)
+[![CPAN Cover Status](https://cpancoverbadge.perl-services.de/OPM-Maker-Command-sopm-1.0.0)](https://cpancoverbadge.perl-services.de/OPM-Maker-Command-sopm-1.0.0)
 
 # NAME
 
-OTRS::OPM::Maker::Command::sopm - Build .sopm file based on metadata (DEPRECATED)
+OPM::Maker::Command::sopm - Build .sopm file based on metadata
 
 # VERSION
 
-version 1.45
+version 1.0.0
 
 # DESCRIPTION
 
-SOPM files are used for OTRS addon creation. They define some metadata like the vendor, their URL, packages required or required Perl modules. 
-It is an XML file and it's no fun to create it. It is not uncommon that the list of files included in the addon is not updated before the addon is built and released.
+SOPM files are used for ticket system addon creation (e.g. for Znuny, OTOBO, ((OTRS)) Community Edition).
+They define some metadata like the vendor, their URL, packages required or required Perl modules. 
+It is an XML file and it's no fun to create it. It is not uncommon that the list of files included in the
+addon is not updated before the addon is built and released.
 
-That's why this package exists. You can define the metadata and stuff like database changes in a JSON file and the file list is created automatically. And you don't have to write the XML tags repeatedly.
+That's why this package exists. You can define the metadata and stuff like database changes in a JSON file
+and the file list is created automatically. And you don't have to write the XML tags repeatedly.
 
 # INSTALLATION PHASES
 
-When an OTRS addon is installed, it happens in several phases
+When an addon is installed, it happens in several phases
 
 - 1 CodeInstall - type "pre"
 - 2 DatabaseInstall - type "pre"
@@ -59,7 +62,7 @@ And this .sopm will be created (assuming the file exists)
 
     <?xml version="1.0" encoding="utf-8" ?>
     <otrs_package version="1.0">
-      <!-- GENERATED WITH OTRS::OPM::Maker::Command::sopm (1.27) -->
+      <!-- GENERATED WITH OPM::Maker::Command::sopm (1.27) -->
       <Name>Test</Name>
       <Version>0.0.3</Version>
       <Framework>3.0.x</Framework>
@@ -116,6 +119,10 @@ Creates those tags
 ### Insert stuff
 
 ### Change Column
+
+# METHODS
+
+## VERSION
 
 
 
