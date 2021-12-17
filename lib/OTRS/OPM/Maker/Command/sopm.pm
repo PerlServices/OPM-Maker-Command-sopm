@@ -5,7 +5,7 @@ use v5.10;
 use strict;
 use warnings;
 
-# ABSTRACT: Build .sopm file based on metadata
+# ABSTRACT: Build .sopm file based on metadata (DEPRECATED)
 
 use Carp;
 use File::Find::Rule;
@@ -22,7 +22,7 @@ use OTRS::OPM::Maker -command;
 use OTRS::OPM::Maker::Utils::OTRS3;
 use OTRS::OPM::Maker::Utils::OTRS4;
 
-our $VERSION = 1.44;
+our $VERSION = 1.45;
 
 sub abstract {
     return "build sopm file based on metadata";
