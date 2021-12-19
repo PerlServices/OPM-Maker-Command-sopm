@@ -284,7 +284,9 @@ sub execute {
             }
 
             next VERSION if !$action_code{$op};
-            
+
+            my $phase = $action->{phase} || $actions{ $action_type };
+
             if ( $op eq 'TableCreate' ) {
                 my $table = $action->{name};
                 $tables_to_delete{$table} = $table_counter++;
@@ -306,30 +308,30 @@ sub execute {
             }
         
             $action->{version} = $version;    
-            push @{ $db_actions{$action_type} }, $action_code{$op}->($action);
+            push @{ $db_actions{$action_type}->{$phase} }, $action_code{$op}->($action);
         }
     }
     
     for my $columns_delete ( @columns_to_delete ) {
-        push @{ $db_actions{Uninstall} }, _ColumnDrop($columns_delete);
+        push @{ $db_actions{Uninstall}->{pre} }, _ColumnDrop($columns_delete);
     }
 
     if ( %tables_to_delete ) {
         for my $table ( sort { $tables_to_delete{$b} <=> $tables_to_delete{$a} }keys %tables_to_delete ) {
-            push @{ $db_actions{Uninstall} }, _TableDrop({ name => $table });
+            push @{ $db_actions{Uninstall}->{pre} }, _TableDrop({ name => $table });
         }
     }
 
     for my $action_type ( qw/Install Upgrade Uninstall/ ) {
+        for my $phase ( qw/pre post/ ) {
         
-        next if !$db_actions{$action_type};
+            next if !$db_actions{$action_type}->{$phase};
         
-        my $order = $actions{$action_type};
-        
-        push @xml_parts,
-            sprintf qq~    <Database$action_type Type="$order">
+            push @xml_parts,
+                sprintf qq~    <Database$action_type Type="$phase">
 %s
-    </Database$action_type>~, join "\n", @{ $db_actions{$action_type} };
+    </Database$action_type>~, join "\n", @{ $db_actions{$action_type}->{$phase} };
+        }
     }
     
     for my $code ( @{ $json->{code} || [] } ) {
