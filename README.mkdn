@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/perlservices/OTRS-OPM-Maker-Command-sopm.svg?branch=master)](https://travis-ci.org/perlservices/OTRS-OPM-Maker-Command-sopm)
+[![Build Status](https://travis-ci.org/perlservices/OPM-Maker-Command-sopm.svg?branch=master)](https://travis-ci.org/perlservices/OPM-Maker-Command-sopm)
 [![Kwalitee status](https://cpants.cpanauthors.org/dist/OPM-Maker-Command-sopm.png)](https://cpants.cpanauthors.org/dist/OPM-Maker-Command-sopm)
-[![GitHub issues](https://img.shields.io/github/issues/perlservices/OTRS-OPM-Maker-Command-sopm.svg)](https://github.com/perlservices/OTRS-OPM-Maker-Command-sopm/issues)
+[![GitHub issues](https://img.shields.io/github/issues/perlservices/OPM-Maker-Command-sopm.svg)](https://github.com/perlservices/OPM-Maker-Command-sopm/issues)
 [![CPAN Cover Status](https://cpancoverbadge.perl-services.de/OPM-Maker-Command-sopm-1.0.0)](https://cpancoverbadge.perl-services.de/OPM-Maker-Command-sopm-1.0.0)
 
 # NAME
@@ -132,13 +132,13 @@ The distribution is contained in a Git repository, so simply clone the
 repository
 
 ```
-$ git clone https://github.com/perlservices/OTRS-OPM-Maker-Command-sopm.git
+$ git clone https://github.com/perlservices/OPM-Maker-Command-sopm.git
 ```
 
 and change into the newly-created directory.
 
 ```
-$ cd OTRS-OPM-Maker-Command-sopm
+$ cd OPM-Maker-Command-sopm
 ```
 
 The project uses [`Dist::Zilla`](https://metacpan.org/pod/Dist::Zilla) to

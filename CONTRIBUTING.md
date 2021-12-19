@@ -5,13 +5,13 @@ The distribution is contained in a Git repository, so simply clone the
 repository
 
 ```
-$ git clone https://github.com/perlservices/OTRS-OPM-Maker-Command-sopm.git
+$ git clone https://github.com/perlservices/OPM-Maker-Command-sopm.git
 ```
 
 and change into the newly-created directory.
 
 ```
-$ cd OTRS-OPM-Maker-Command-sopm
+$ cd OPM-Maker-Command-sopm
 ```
 
 The project uses [`Dist::Zilla`](https://metacpan.org/pod/Dist::Zilla) to
