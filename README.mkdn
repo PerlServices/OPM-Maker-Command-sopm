@@ -120,6 +120,65 @@ Creates those tags
 
 ### Change Column
 
+## Code execution
+
+You can execute code when an addon is installed. As you can see above, there are to 
+phases when code can be executed.
+
+### Run "post" code
+
+Sample config
+
+    "code" : [
+        { "type" : "Install" },
+        { "type" : "Uninstall" }
+    ]
+
+This creates
+
+    <CodeInstall Type="post"><![CDATA[
+        $Kernel::OM->Get('var::packagesetup::' . $Param{Structure}->{Name}->{Content} )->CodeInstall();
+    ]]></CodeInstall>
+    <CodeUninstall Type="post"><![CDATA[
+        $Kernel::OM->Get('var::packagesetup::' . $Param{Structure}->{Name}->{Content} )->CodeUninstall();
+    ]]></CodeUninstall>
+
+You need to provide the `var::packagesetup::xxxxx` package (where _xxxxx_ is the name of the addon).
+
+There are four types:
+
+- Install
+- Upgrade
+- Reinstall
+- Uninstall
+
+The methods called are usually named `CodeInstall`, `CodeUninstall`, etc. If you need to run an other
+method, you can specify the method to be called:
+
+    "code" : [
+        { "type" : "Install", "function": "OtherMethod" }
+    ]
+
+And that would create
+
+    <CodeInstall Type="post"><![CDATA[
+        $Kernel::OM->Get('var::packagesetup::' . $Param{Structure}->{Name}->{Content} )->OtherMethod();
+    ]]></CodeInstall>
+
+Usually you would run the code after the files
+are installed and database changes are done. But sometime you need to run code before
+this stuff is done. As the packagesetup file isn't available you, you would need to provide
+the Perl code in the JSON file. That's nasty. With _inline_ you can tell this command
+to get the Perl code from a file.
+
+### Options
+
+- type
+- version
+- phase
+- function
+- inline
+
 # METHODS
 
 ## VERSION
