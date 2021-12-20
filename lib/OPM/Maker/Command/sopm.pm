@@ -841,6 +841,80 @@ Creates those tags
 
 =head3 Change Column
 
+=head2 Code execution
+
+You can execute code when an addon is installed. As you can see above, there are to 
+phases when code can be executed.
+
+=head3 Run "post" code
+
+Sample config
+
+    "code" : [
+        { "type" : "Install" },
+        { "type" : "Uninstall" }
+    ]
+
+This creates
+
+    <CodeInstall Type="post"><![CDATA[
+        $Kernel::OM->Get('var::packagesetup::' . $Param{Structure}->{Name}->{Content} )->CodeInstall();
+    ]]></CodeInstall>
+    <CodeUninstall Type="post"><![CDATA[
+        $Kernel::OM->Get('var::packagesetup::' . $Param{Structure}->{Name}->{Content} )->CodeUninstall();
+    ]]></CodeUninstall>
+
+You need to provide the C<var::packagesetup::xxxxx> package (where I<xxxxx> is the name of the addon).
+
+There are four types:
+
+=over 4
+
+=item * Install
+
+=item * Upgrade
+
+=item * Reinstall
+
+=item * Uninstall
+
+=back
+
+The methods called are usually named C<CodeInstall>, C<CodeUninstall>, etc. If you need to run an other
+method, you can specify the method to be called:
+
+    "code" : [
+        { "type" : "Install", "function": "OtherMethod" }
+    ]
+
+And that would create
+
+    <CodeInstall Type="post"><![CDATA[
+        $Kernel::OM->Get('var::packagesetup::' . $Param{Structure}->{Name}->{Content} )->OtherMethod();
+    ]]></CodeInstall>
+
+Usually you would run the code after the files
+are installed and database changes are done. But sometime you need to run code before
+this stuff is done. As the packagesetup file isn't available you, you would need to provide
+the Perl code in the JSON file. That's nasty. With I<inline> you can tell this command
+to get the Perl code from a file.
+
+=head3 Options
+
+=over 4
+
+=item * type
+
+=item * version
+
+=item * phase
+
+=item * function
+
+=item * inline
+
+=back
+
 =head1 METHODS
 
 =head2 VERSION
