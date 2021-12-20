@@ -333,7 +333,8 @@ sub execute {
     </Database$action_type>~, join "\n", @{ $db_actions{$action_type}->{$phase} };
         }
     }
-    
+
+    CODE:
     for my $code ( @{ $json->{code} || [] } ) {
         if ( !ref $code ) {
             $code = {
@@ -344,6 +345,12 @@ sub execute {
         }
 
         $code->{type} = 'Code' . $code->{type};
+
+        if ( $code->{inline} ) {
+            push @xml_parts, _InlineCode( $code );
+            next CODE;
+        }
+
         push @xml_parts, $utils->packagesetup(
             $code->{type},
             $code->{version},
@@ -389,6 +396,34 @@ sub execute {
     my $fh = IO::File->new( $name . '.sopm', 'w' ) or die $!;
     $fh->print( $xml );
     $fh->close;
+}
+
+sub _InlineCode {
+    my ($code) = @_;
+
+    my @parts = split /::/, $code->{inline};
+
+    my $method  = pop @parts;
+    $parts[-1] .= '.pm';
+    my $file    = Path::Class::File->new( @parts );
+
+    my $content = $file->slurp( iomode => '<:encoding(utf-8)' );
+
+    my ($method_body) = $content =~ m{
+        ^sub \s+ \Q$method\E \s* \{ \s+
+            (.*?)
+        ^\}\s+
+    }xms;
+
+    my $version = $code->{version} ?
+        ' Version="' . $code->{version} . '"' :
+        '';
+
+    my $xml = sprintf q~    <%s Type="%s"%s><![CDATA[
+        %s
+    ]]></%s>~, $code->{type}, $code->{phase} // 'post', $version, $method_body, $code->{type};
+
+    return $xml;
 }
 
 sub _IntroTemplate {
