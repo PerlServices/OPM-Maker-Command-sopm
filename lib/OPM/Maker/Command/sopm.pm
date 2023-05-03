@@ -117,6 +117,7 @@ sub execute {
             '4' => 'OTRS4',
             '5' => 'OTRS4',
             '6' => 'OTRS4',
+            '7' => 'OTRS4',
         },
         KIX => {
             '5' => 'OTRS4',
@@ -133,7 +134,7 @@ sub execute {
         $max = 5;
     }
 
-    my $mod   = $utils_versions{$product}->{$max} || $utils_versions{OTRS}->{3};
+    my $mod   = $utils_versions{$product}->{$max} || $utils_versions{OTRS}->{4};
     my $utils = 'OPM::Maker::Utils::' . $mod;
 
     if ( $json->{requires} ) {
