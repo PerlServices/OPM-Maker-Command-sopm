@@ -176,6 +176,10 @@ sub execute {
         }sort @files;
 
         if ( $json->{exclude_files} and 'ARRAY' eq ref $json->{exclude_files} ) {
+            # ignore ignore file ;-)
+            my $ignore_name = '.opmbuild_filetest_ignore';
+            push @{ $json->{exclude_files} }, $ignore_name if !grep{ $_ eq $ignore_name } @{ $json->{exclude_files} };
+
             for my $index ( reverse 0 .. $#files ) {
                 my $file     = $files[$index];
                 my $excluded = first {
@@ -184,6 +188,12 @@ sub execute {
 
                 splice @files, $index, 1 if $excluded;
             }
+
+            # create ignore file
+            my $fh = IO::File->new( $ignore_name, 'w' ) or die $!;
+            my $ignore_files = join "\n", @{ $json->{exclude_files} };
+            $fh->print( $ignore_files );
+            $fh->close;
         }
 
         $utils->filecheck( \@files );
